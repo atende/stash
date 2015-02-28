@@ -1,6 +1,6 @@
-# Atlassian SOFTWARE_NAME
+# Atlassian Stash
 
-Description of the software
+On-premises source code management for Git that's secure, fast, and enterprise grade. Create and manage repositories, set up fine-grained permissions, and collaborate on code – all with the flexibility of your servers.
 
 This is inspired by [Hbokh/docker-jira-postgresql](https://github.com/hbokh/docker-jira-postgresql)
 but the installation and run process is made in a more generic way, to serve as base
@@ -11,11 +11,11 @@ for the installation of other Atlassian Products.
 Is best practice to separate the data from the container. This instalation process
 will assume this.
 
-### 1. Create a data-only container for SOFTWARE_NAME
+### 1. Create a data-only container for stash
 
-Create a data-only container from Busybox (very small footprint) and name it "SOFTWARE_NAME\_datastore":
+Create a data-only container from Busybox (very small footprint) and name it "stash\_datastore":
 
-    docker run -v /opt/crowd-home --name=SOFTWARE_NAME\_datastore -d busybox echo "SOFTWARE_NAME data"
+    docker run -v /opt/crowd-home --name=stash\_datastore -d busybox echo "stash data"
 
 **NOTE**: data-only containers don't have to run / be active to be used.
 
@@ -25,8 +25,10 @@ See: [POSTGRESQL](POSTGRESQL.md)
 
 ### 3. Start the Software container
 
-    docker run -d --name SOFTWARE_NAME -p 8085:8085 --link postgresql:db atende/SOFTWARE_NAME \
-    --volumes-from SOFTWARE_NAME\_datastore
+    docker run -d --name stash -p 7990:7990 -p 7999:7999 --link postgresql:db atende/stash \
+    --volumes-from stash\_datastore
+
+The port 7999 is used to SSH git access and 7990 for web access
 
 ## Running Behind a Proxy
 
