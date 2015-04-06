@@ -58,8 +58,8 @@ val CROWD_URL = sys.env.get("CROWD_URL")
 val CROWD_PASSWORD = sys.env.get("CROWD_PASSWORD")
 val CROWD_APPLICATION_NAME = sys.env.get("CROWD_APPLICATION_NAME")
 
-val tomcatFile = TOMCAT_LOCATION + "/conf/server.xml"
-val tomcatFileOriginal = TOMCAT_LOCATION + "/conf/server.original.xml"
+val tomcatFile = if(SOFTWARE_NAME=="stash") "/opt/stash-home/shared/server.xml" else TOMCAT_LOCATION + "/conf/server.xml"
+val tomcatFileOriginal = if(SOFTWARE_NAME=="stash") "/opt/stash-home/shared/server.original.xml" else TOMCAT_LOCATION + "/conf/server.original.xml"
 
 implicit def toPath (filename: String) = get(filename)
 if(!exists(tomcatFileOriginal)){
@@ -75,7 +75,7 @@ if(SECONDARY_NO_SSL_PORT.isDefined){
 if(VIRTUAL_HOST.isDefined) {
    finalTransformation = new RuleTransformer(new ProxyTransform(SOFTWARE_PORT, VIRTUAL_HOST.get, PROXY_PORT, PROXY_SCHEME, PROXY_SECURED))(finalTransformation)
 }
-XML.save(TOMCAT_LOCATION + "/conf/server.xml", finalTransformation, "UTF-8", true, null)
+XML.save(tomcatFile, finalTransformation, "UTF-8", true, null)
 val softwareHome = if(SOFTWARE_NAME == "confluence") TOMCAT_LOCATION + s"/confluence" else TOMCAT_LOCATION + s"/atlassian-${SOFTWARE_NAME}"
 val seraphFile = softwareHome + "/WEB-INF/classes/seraph-config.xml"
 val crowdPropertiesFile = softwareHome + "/WEB-INF/classes/crowd.properties"
