@@ -62,8 +62,10 @@ val tomcatFile = if(SOFTWARE_NAME=="stash") "/opt/stash-home/shared/server.xml" 
 val tomcatFileOriginal = if(SOFTWARE_NAME=="stash") "/opt/stash-home/shared/server.original.xml" else TOMCAT_LOCATION + "/conf/server.original.xml"
 
 implicit def toPath (filename: String) = get(filename)
-if(!exists(tomcatFileOriginal)){
+if(!exists(tomcatFileOriginal) && exists(tomcatFile)){
    copy (tomcatFile, tomcatFileOriginal , REPLACE_EXISTING)
+}else if(!exists(tomcatFileOriginal) && SOFTWARE_NAME=="stash"){
+  copy("/opt/stash/conf/server.xml", tomcatFileOriginal, REPLACE_EXISTING)
 }
 
 val tomcatXml = XML.loadFile(tomcatFileOriginal)
